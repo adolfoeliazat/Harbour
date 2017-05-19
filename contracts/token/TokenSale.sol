@@ -43,7 +43,7 @@ contract TokenSale {
     }
 
     function () payable {
-        doPayment(msg.sender);
+        doPurchase(msg.sender);
     }
 
     function allocateTokenateTokens() onlyAfterBlock(endBlock) {
@@ -62,6 +62,8 @@ contract TokenSale {
             allocate(devMultisig, tokensPerWallet);
             allocate(developers[i], tokensPerWallet);
         }
+
+        devAllocated = true;
     }
 
     function doPurchase(address _owner) onlyBeforeBlock(endBlock) onlyAfterBlock(startBlock) private {
