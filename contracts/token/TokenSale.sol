@@ -58,7 +58,10 @@ contract TokenSale {
         uint tokensPerDev = 25000;
         uint tokensPerWallet = tokensPerDev / 2;
 
-        // @todo for dev send to multisig and to dev wallet
+        for (uint i = 0; i < developers.length; i++) {
+            allocate(devMultisig, tokensPerWallet);
+            allocate(developers[i], tokensPerWallet);
+        }
     }
 
     function doPurchase(address _owner) onlyBeforeBlock(endBlock) onlyAfterBlock(startBlock) private {

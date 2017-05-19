@@ -7,23 +7,23 @@ contract Token {
     string public symbol;
 
     uint public decimals = 18;
-    uint public _totalSupply;
+    uint public totalSupply;
 
     mapping (address => mapping (address => uint)) allowed;
-    mapping(address => uint) balances;
+    mapping (address => uint) balances;
 
     event Transfer(address indexed from, address indexed to, uint value);
     event Approval(address indexed owner, address indexed spender, uint value);
 
-    function Token(string name, string symbol, uint256 totalSupply) {
-        balanceOf[msg.sender] = totalSupply;
-        this.totalSupply = totalSupply;
-        this.name = name;
-        this.symbol = symbol;
+    function Token(string _name, string _symbol, uint256 _totalSupply) {
+        balances[msg.sender] = totalSupply;
+        totalSupply = _totalSupply;
+        name = _name;
+        symbol = _symbol;
     }
 
     function totalSupply() constant returns (uint totalSupply) {
-        totalSupply = _totalSupply;
+        return totalSupply;
     }
 
     function transfer(address _to, uint256 _value) returns (bool success) {
