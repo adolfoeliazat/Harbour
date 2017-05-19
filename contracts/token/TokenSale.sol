@@ -13,13 +13,19 @@ contract TokenSale {
 
     uint public startBlock;
     uint public endBlock;
-    uint public cap;
+    uint public hardCap;
+    uint public softCap;
     uint public collected;
     uint public price;
     uint public purchaseLimit;
 
+    bool public softCapReached = false;
     bool public tokenateAllocated = false;
     bool public devAllocated = false;
+
+    event GoalReached(uint amountRaised);
+    event SoftCapReached(uint softCap);
+    event NewContribution(address indexed holder, uint256 tokenAmount, uint256 etherAmount);
 
     modifier onlyBeforeBlock(uint block) {
         if (block.number > block) throw;
@@ -31,8 +37,9 @@ contract TokenSale {
         _;
     }
 
-    function TokenSale(uint _cap) {
-        cap = _cap * 1 ether;
+    function TokenSale(uint _hardCap, uint _softCap) {
+        hardCap = _hardCap * 1 ether;
+        softCap = _softCap * 1 ether;
     }
 
     function () payable {
@@ -55,7 +62,7 @@ contract TokenSale {
     }
 
     function doPurchase(address _owner) onlyBeforeBlock(endBlock) onlyAfterBlock(startBlock) private {
-        if (collected + msg.value > cap) throw;
+        if (collected + msg.value > hardCap) throw;
 
         // @todo safe multiply
         uint tokens = msg.value * price;
@@ -69,6 +76,7 @@ contract TokenSale {
         collected += msg.value;
 
         allocate(_owner, tokens);
+        NewContribution(_owner, tokens, msg.value);
     }
 
     function allocate(address _to, uint _amount) private {

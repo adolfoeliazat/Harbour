@@ -5,6 +5,7 @@ contract Token {
 
     string public name;
     string public symbol;
+
     uint public decimals = 18;
     uint public _totalSupply;
 
