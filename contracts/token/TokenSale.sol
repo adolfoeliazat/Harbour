@@ -28,12 +28,12 @@ contract TokenSale {
     event NewContribution(address indexed holder, uint256 tokenAmount, uint256 etherAmount);
 
     modifier onlyBeforeBlock(uint _block) {
-        if (block.number > block) throw;
+        if (block.number > _block) throw;
         _;
     }
 
     modifier onlyAfterBlock(uint _block) {
-        if (block.number > block) throw;
+        if (block.number < _block) throw;
         _;
     }
 
