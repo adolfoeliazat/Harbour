@@ -6,13 +6,13 @@ contract TokenSale {
 
     Token public token;
 
-    address public tokenateMultisig;
+    address public tokenateMultisig; // @todo add a nicer way, aka allocations object.
     address public devMultisig;
-    address public fundWallet;
+    address public beneficiary;
     address[] public developers;
 
-    uint public startBlock;
-    uint public endBlock;
+    uint public startBlock; // @todo change to start time
+    uint public endBlock; // @todo change to duration
     uint public hardCap;
     uint public softCap;
     uint public collected;
@@ -37,9 +37,12 @@ contract TokenSale {
         _;
     }
 
-    function TokenSale(uint _hardCap, uint _softCap) {
+    function TokenSale(uint _hardCap, uint _softCap, address _token, uint _price, uint _purchaseLimit) {
         hardCap = _hardCap * 1 ether;
         softCap = _softCap * 1 ether;
+        price = _price * 1 ether;
+        purchaseLimit = _purchaseLimit;
+        token = Token(_token);
     }
 
     function () payable {
@@ -76,7 +79,7 @@ contract TokenSale {
         if (tokens > purchaseLimit) throw;
         if (token.balanceOf(_owner) + tokens > purchaseLimit) throw;
 
-        if (!fundWallet.send(msg.value)) throw;
+        if (!beneficiary.send(msg.value)) throw;
 
         collected += msg.value;
 
