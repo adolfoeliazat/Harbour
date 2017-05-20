@@ -27,12 +27,12 @@ contract TokenSale {
     event SoftCapReached(uint softCap);
     event NewContribution(address indexed holder, uint256 tokenAmount, uint256 etherAmount);
 
-    modifier onlyBeforeBlock(uint block) {
+    modifier onlyBeforeBlock(uint _block) {
         if (block.number > block) throw;
         _;
     }
 
-    modifier onlyAfterBlock(uint block) {
+    modifier onlyAfterBlock(uint _block) {
         if (block.number > block) throw;
         _;
     }
