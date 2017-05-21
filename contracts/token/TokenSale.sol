@@ -69,11 +69,11 @@ contract TokenSale {
         devAllocated = true;
     }
 
-    function doPurchase(address _owner) onlyBeforeBlock(endBlock) onlyAfterBlock(startBlock) private {
+    function doPurchase(address _owner) private {
         if (collected + msg.value > hardCap) throw;
 
         // @todo safe multiply
-        uint tokens = msg.value * price;
+        uint tokens = msg.value / price;
 
         // Ensure we are not surpassing the purchasing limit per address
         if (tokens > purchaseLimit) throw;
