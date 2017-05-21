@@ -41,7 +41,7 @@ contract TokenSale {
         hardCap = _hardCap * 1 ether;
         softCap = _softCap * 1 ether;
         price = _price * 1 ether;
-        purchaseLimit = _purchaseLimit;
+        purchaseLimit = _purchaseLimit * 1 ether;
         token = Token(_token);
     }
 
@@ -72,12 +72,11 @@ contract TokenSale {
     function doPurchase(address _owner) private {
         if (collected + msg.value > hardCap) throw;
 
-        // @todo safe multiply
-        uint tokens = msg.value / price;
+        uint amount = msg.value;
+        uint tokens = amount / price;
 
         // Ensure we are not surpassing the purchasing limit per address
-        // if (tokens > purchaseLimit) throw;
-        // if (token.balanceOf(_owner) + tokens > purchaseLimit) throw;
+         if ((token.balanceOf(_owner) * price) + amount > purchaseLimit) throw;
 
         if (!beneficiary.send(msg.value)) throw;
 
