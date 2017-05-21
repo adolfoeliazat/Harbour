@@ -16,8 +16,8 @@ contract Token {
     event Approval(address indexed owner, address indexed spender, uint value);
 
     function Token(string _name, string _symbol, uint256 _totalSupply) {
-        balances[msg.sender] = totalSupply;
         totalSupply = _totalSupply;
+        balances[msg.sender] = totalSupply;
         name = _name;
         symbol = _symbol;
     }
