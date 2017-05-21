@@ -76,6 +76,7 @@ contract TokenSale {
         uint tokens = amount / price;
 
         // Ensure we are not surpassing the purchasing limit per address
+        if (amount > purchaseLimit) throw;
         if ((token.balanceOf(_owner) * price) + amount > purchaseLimit) throw;
 
         if (!beneficiary.send(msg.value)) throw;
