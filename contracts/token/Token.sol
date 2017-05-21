@@ -72,9 +72,9 @@ contract Token {
     }
 
     function transferFunds(address _from, address _to, uint256 _value) private {
-//        if (!isSafeToAdd(balances[_to], _value) || !isSafeToSubtract(balances[_from], _value)) {
-//            throw;
-//        }
+        if (!isSafeToAdd(balances[_to], _value) || !isSafeToSubtract(balances[_from], _value)) {
+            throw;
+        }
 
         balances[_to] += _value;
         balances[_from] -= _value;
