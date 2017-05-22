@@ -26,6 +26,8 @@ contract TokenSale {
     bool public devAllocated = false;
     bool public allocated = false;
 
+    mapping (address => uint) purchases;
+
     event GoalReached(uint amountRaised);
     event SoftCapReached(uint softCap);
     event NewContribution(address indexed holder, uint256 tokenAmount, uint256 etherAmount);
@@ -63,18 +65,15 @@ contract TokenSale {
             SoftCapReached(softCap);
         }
 
-        uint amount = msg.value;
-        uint tokens = amount * price;
+        uint tokens = msg.value * price;
 
-        // Ensure we are not surpassing the purchasing limit per address
-        if (amount > purchaseLimit) throw;
-        if ((token.balanceOf(_owner) / price) + amount > purchaseLimit) throw;
-
+        if (purchases[_owner] + amount > purchaseLimit) throw;
         if (!beneficiary.send(msg.value)) throw;
 
         collected += msg.value;
+        purchases[_owner] += msg.value;
 
-        token.transfer(_to, _amount);
+        token.transfer(msg.sender, _amount);
         NewContribution(_owner, tokens, msg.value);
     }
 }
