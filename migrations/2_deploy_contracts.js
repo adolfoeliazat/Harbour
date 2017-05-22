@@ -1,5 +1,5 @@
-var Token = artifacts.require("./token/Token.sol");
-var TokenSale = artifacts.require("./token/TokenSale.sol");
+var Token = artifacts.require("./tokens/Token.sol");
+var TokenSale = artifacts.require("./tokens/TokenSale.sol");
 var Ownable = artifacts.require("./misc/ownable.sol");
 
 
