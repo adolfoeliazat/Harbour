@@ -1,8 +1,9 @@
 pragma solidity ^0.4.11;
 
 import "./Token.sol";
+import "./../misc/ownable.sol";
 
-contract TokenSale {
+contract TokenSale is ownable {
 
     struct Allocation {
         string name;
@@ -44,7 +45,7 @@ contract TokenSale {
     }
 
     // @todo if sale over
-    function allocate() {
+    function allocate() onlyOwner {
         if (allocated) throw;
 
         for (uint i = 0; i < allocations.length; i++) {
@@ -53,6 +54,10 @@ contract TokenSale {
         }
 
         allocated = true;
+    }
+
+    function addAllocation(string name, address beneficiary, uint amount) onlyOwner {
+        allocations[allocations.length] = new Allocation(name, beneficiary, amount);
     }
 
     function doPurchase(address _owner) private {
