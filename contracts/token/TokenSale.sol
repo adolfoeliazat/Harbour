@@ -79,6 +79,15 @@ contract TokenSale is ownable {
         allocated = true;
     }
 
+    function withdraw() onlyAfter(endTime) onlyOwner {
+        if (collected >= softCap) {
+            beneficiary.send(collected);
+            return;
+        }
+
+        // @todo if not run refunds
+    }
+
     function addAllocation(string name, address beneficiary, uint amount) onlyOwner {
         allocations[allocations.length] = Allocation(name, beneficiary, amount);
     }
@@ -100,14 +109,5 @@ contract TokenSale is ownable {
 
         token.transfer(msg.sender, msg.value);
         NewContribution(_owner, tokens, msg.value);
-    }
-
-    function withdraw() onlyOwner onlyAfter(endTime) {
-        if (collected >= softCap) {
-            beneficiary.send(collected);
-            return;
-        }
-
-        // @todo if not run refunds
     }
 }
