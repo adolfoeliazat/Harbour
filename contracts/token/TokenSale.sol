@@ -7,8 +7,8 @@ contract TokenSale is ownable {
 
     struct Allocation {
         string name;
-        uint amount;
         address beneficiary;
+        uint amount;
     }
 
     Token public token;
