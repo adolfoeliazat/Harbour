@@ -22,8 +22,6 @@ contract TokenSale {
     uint public purchaseLimit;
 
     bool public softCapReached = false;
-    bool public tokenateAllocated = false;
-    bool public devAllocated = false;
     bool public allocated = false;
 
     mapping (address => uint) purchases;
