@@ -36,7 +36,7 @@ contract TokenSale is ownable {
     event AllocatedFunds(string name, address indexed holder, uint256 amount);
 
     modifier onlyAfter(uint time) {
-        if (now < startTime) throw;
+        if (now < time) throw;
         _;
     }
 
