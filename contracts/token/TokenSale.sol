@@ -4,12 +4,15 @@ import "./Token.sol";
 
 contract TokenSale {
 
-    Token public token;
+    struct Allocation {
+        uint amount;
+        address beneficiary;
+    }
 
-    address public tokenateMultisig; // @todo add a nicer way, aka allocations object.
-    address public devMultisig;
+    Token public token;
+    Allocation[] public allocations;
+
     address public beneficiary;
-    address[] public developers;
 
     uint public hardCap;
     uint public softCap;
@@ -20,6 +23,7 @@ contract TokenSale {
     bool public softCapReached = false;
     bool public tokenateAllocated = false;
     bool public devAllocated = false;
+    bool public allocated = false;
 
     event GoalReached(uint amountRaised);
     event SoftCapReached(uint softCap);
@@ -37,24 +41,15 @@ contract TokenSale {
         doPurchase(msg.sender);
     }
 
-    function allocateTokenateTokens() {
-        if (tokenateAllocated) throw;
-        token.transfer(tokenateMultisig, 100000 * 10**18);
-        tokenateAllocated = true;
-    }
+    // @todo if sale over
+    function allocate() {
+        if (allocated) throw;
 
-    function allocateDeveloperTokens() {
-        if (devAllocated) throw;
-
-        uint tokensPerDev = 25000 * 10**18;
-        uint tokensPerWallet = tokensPerDev / 2;
-
-        for (uint i = 0; i < developers.length; i++) {
-            token.transfer(devMultisig, tokensPerWallet);
-            token.transfer(developers[i], tokensPerWallet);
+        for (uint i = 0; i < allocations.length; i++) {
+            token.transfer(allocations[i].beneficiary, allocations[i].amount);
         }
 
-        devAllocated = true;
+        allocated = true;
     }
 
     function doPurchase(address _owner) private {
