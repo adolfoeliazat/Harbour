@@ -1,6 +1,5 @@
 pragma solidity ^0.4.11;
 
-
 contract Token {
 
     string public name;
@@ -15,8 +14,8 @@ contract Token {
     event Transfer(address indexed from, address indexed to, uint value);
     event Approval(address indexed owner, address indexed spender, uint value);
 
-    function Token(string _name, string _symbol, uint256 _totalSupply) {
-        totalSupply = _totalSupply;
+    function Token(string _name, string _symbol, uint _totalSupply) {
+        totalSupply = _totalSupply * 10**decimals;
         balances[msg.sender] = totalSupply;
         name = _name;
         symbol = _symbol;
@@ -26,7 +25,7 @@ contract Token {
         return totalSupply;
     }
 
-    function transfer(address _to, uint256 _value) returns (bool success) {
+    function transfer(address _to, uint _value) returns (bool success) {
         if (balances[msg.sender] < _value || _value <= 0) {
             return false;
         }
@@ -41,7 +40,7 @@ contract Token {
         return balances[_owner];
     }
 
-    function transferFrom(address _from, address _to, uint256 _value) returns (bool success) {
+    function transferFrom(address _from, address _to, uint _value) returns (bool success) {
         if (balances[_from] < _value || allowed[_from][msg.sender] < _value || _value <= 0) {
             return false;
         }
@@ -53,7 +52,7 @@ contract Token {
         return true;
     }
 
-    function approve(address _spender, uint256 _value) returns (bool success) {
+    function approve(address _spender, uint _value) returns (bool success) {
         allowed[msg.sender][_spender] = _value;
         Approval(msg.sender, _spender, _value);
         return true;
@@ -71,7 +70,7 @@ contract Token {
         return (right <= left);
     }
 
-    function transferFunds(address _from, address _to, uint256 _value) private {
+    function transferFunds(address _from, address _to, uint _value) private {
         if (!isSafeToAdd(balances[_to], _value) || !isSafeToSubtract(balances[_from], _value)) {
             throw;
         }
