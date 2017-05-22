@@ -94,7 +94,7 @@ contract TokenSale is ownable {
         uint tokens = msg.value * price;
 
         if (purchases[_owner] + msg.value > purchaseLimit) throw;
-        if (!beneficiary.send(msg.value)) throw;
+        if (!beneficiary.send(msg.value)) throw; // @todo only send once done so we can still refund
 
         collected += msg.value;
         purchases[_owner] += msg.value;
