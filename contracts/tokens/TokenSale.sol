@@ -84,7 +84,9 @@ contract TokenSale is ownable {
         if (softCapReached) {
             beneficiary.send(collected);
 
-            // @todo burn leftovers
+            if (collected < hardCap) {
+                token.transfer(0x0, token.balanceOf(this))
+            }
 
             return;
         }
