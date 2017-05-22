@@ -1,6 +1,8 @@
 pragma solidity ^0.4.11;
 
-contract Token {
+import "./../misc/ownable.sol";
+
+contract Token is ownable {
 
     string public name;
     string public symbol;
@@ -60,6 +62,12 @@ contract Token {
 
     function allowance(address _owner, address _spender) constant returns (uint remaining) {
         return allowed[_owner][_spender];
+    }
+
+    function burn(uint _amount) onlyOwner {
+        if (balances[msg.sender] < _amount) throw;
+        balances[msg.sender] -= _amount;
+        totalSupply -= _amount;
     }
 
     function isSafeToAdd(uint left, uint right) private returns (bool) {

@@ -85,7 +85,7 @@ contract TokenSale is ownable {
             beneficiary.send(collected);
 
             if (collected < hardCap) {
-                token.transfer(0x0, token.balanceOf(this))
+                token.burn(token.balanceOf(this));
             }
 
             return;
