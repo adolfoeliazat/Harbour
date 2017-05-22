@@ -80,7 +80,7 @@ contract TokenSale is ownable {
     }
 
     function addAllocation(string name, address beneficiary, uint amount) onlyOwner {
-        allocations[allocations.length] = new Allocation(name, beneficiary, amount);
+        allocations[allocations.length] = Allocation(name, beneficiary, amount);
     }
 
     function doPurchase(address _owner) onlyAfter(startTime) onlyBefore(endTime) private {
