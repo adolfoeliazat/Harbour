@@ -73,7 +73,7 @@ contract TokenSale {
         collected += msg.value;
         purchases[_owner] += msg.value;
 
-        token.transfer(msg.sender, _amount);
+        token.transfer(msg.sender, msg.value);
         NewContribution(_owner, tokens, msg.value);
     }
 }
