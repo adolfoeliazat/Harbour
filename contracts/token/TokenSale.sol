@@ -5,6 +5,7 @@ import "./Token.sol";
 contract TokenSale {
 
     struct Allocation {
+        string name;
         uint amount;
         address beneficiary;
     }
@@ -28,6 +29,7 @@ contract TokenSale {
     event GoalReached(uint amountRaised);
     event SoftCapReached(uint softCap);
     event NewContribution(address indexed holder, uint256 tokenAmount, uint256 etherAmount);
+    event AllocatedFunds(string name, address indexed holder, uint256 amount);
 
     function TokenSale(uint _hardCap, uint _softCap, address _token, uint _price, uint _purchaseLimit) {
         hardCap = _hardCap * 1 ether;
@@ -47,6 +49,7 @@ contract TokenSale {
 
         for (uint i = 0; i < allocations.length; i++) {
             token.transfer(allocations[i].beneficiary, allocations[i].amount);
+            AllocatedFunds(allocations[i].name, allocations[i].beneficiary, allocations[i].amount);
         }
 
         allocated = true;
