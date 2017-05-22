@@ -39,19 +39,19 @@ contract TokenSale {
 
     function allocateTokenateTokens() {
         if (tokenateAllocated) throw;
-        allocate(tokenateMultisig, 100000);
+        token.transfer(tokenateMultisig, 100000 * 10**18);
         tokenateAllocated = true;
     }
 
     function allocateDeveloperTokens() {
         if (devAllocated) throw;
 
-        uint tokensPerDev = 25000;
+        uint tokensPerDev = 25000 * 10**18;
         uint tokensPerWallet = tokensPerDev / 2;
 
         for (uint i = 0; i < developers.length; i++) {
-            allocate(devMultisig, tokensPerWallet);
-            allocate(developers[i], tokensPerWallet);
+            token.transfer(devMultisig, tokensPerWallet);
+            token.transfer(developers[i], tokensPerWallet);
         }
 
         devAllocated = true;
