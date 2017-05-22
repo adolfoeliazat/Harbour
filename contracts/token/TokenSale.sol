@@ -15,6 +15,7 @@ contract TokenSale is ownable {
     Allocation[] public allocations;
 
     address public beneficiary;
+    address[] public holders;
 
     uint public hardCap;
     uint public softCap;
@@ -85,7 +86,11 @@ contract TokenSale is ownable {
             return;
         }
 
-        // @todo if not run refunds
+        for (uint i = 0; i < holders.length; i++) {
+            holder = holders[i];
+            holder.send(purchases[holder]);
+            purchases[holder] = 0;
+        }
     }
 
     function addAllocation(string name, address beneficiary, uint amount) onlyOwner {
@@ -103,6 +108,9 @@ contract TokenSale is ownable {
         uint tokens = msg.value * price;
 
         if (purchases[_owner] + msg.value > purchaseLimit) throw;
+        if (purchases[_owner] == 0) {
+            holders[holders.length] = _owner
+        }
 
         collected += msg.value;
         purchases[_owner] += msg.value;
