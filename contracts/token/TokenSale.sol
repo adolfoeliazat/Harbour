@@ -37,13 +37,13 @@ contract TokenSale {
         doPurchase(msg.sender);
     }
 
-    function allocateTokenateTokens() onlyAfterBlock(endBlock) {
+    function allocateTokenateTokens() {
         if (tokenateAllocated) throw;
         allocate(tokenateMultisig, 100000);
         tokenateAllocated = true;
     }
 
-    function allocateDeveloperTokens() onlyAfterBlock(endBlock) {
+    function allocateDeveloperTokens() {
         if (devAllocated) throw;
 
         uint tokensPerDev = 25000;
