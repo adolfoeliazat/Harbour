@@ -83,6 +83,9 @@ contract TokenSale is ownable {
     function withdraw() onlyAfter(endTime) onlyOwner {
         if (softCapReached) {
             beneficiary.send(collected);
+
+            // @todo burn leftovers
+
             return;
         }
 
