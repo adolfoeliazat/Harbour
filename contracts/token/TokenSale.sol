@@ -67,7 +67,7 @@ contract TokenSale {
 
         uint tokens = msg.value * price;
 
-        if (purchases[_owner] + amount > purchaseLimit) throw;
+        if (purchases[_owner] + msg.value > purchaseLimit) throw;
         if (!beneficiary.send(msg.value)) throw;
 
         collected += msg.value;
