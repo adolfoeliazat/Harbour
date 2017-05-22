@@ -4,15 +4,17 @@ import "./Token.sol";
 
 contract TokenSale {
 
+    struct Allocation {
+        string name;
+        uint amount;
+        address beneficiary;
+    }
+
     Token public token;
+    Allocation[] public allocations;
 
-    address public tokenateMultisig; // @todo add a nicer way, aka allocations object.
-    address public devMultisig;
     address public beneficiary;
-    address[] public developers;
 
-    uint public startBlock; // @todo change to start time
-    uint public endBlock; // @todo change to duration
     uint public hardCap;
     uint public softCap;
     uint public collected;
@@ -22,26 +24,18 @@ contract TokenSale {
     bool public softCapReached = false;
     bool public tokenateAllocated = false;
     bool public devAllocated = false;
+    bool public allocated = false;
 
     event GoalReached(uint amountRaised);
     event SoftCapReached(uint softCap);
     event NewContribution(address indexed holder, uint256 tokenAmount, uint256 etherAmount);
-
-    modifier onlyBeforeBlock(uint _block) {
-        if (block.number > _block) throw;
-        _;
-    }
-
-    modifier onlyAfterBlock(uint _block) {
-        if (block.number < _block) throw;
-        _;
-    }
+    event AllocatedFunds(string name, address indexed holder, uint256 amount);
 
     function TokenSale(uint _hardCap, uint _softCap, address _token, uint _price, uint _purchaseLimit) {
         hardCap = _hardCap * 1 ether;
         softCap = _softCap * 1 ether;
-        price = _price * 1 ether;
-        purchaseLimit = _purchaseLimit;
+        price = _price;
+        purchaseLimit = _purchaseLimit * 1 ether;
         token = Token(_token);
     }
 
@@ -49,45 +43,38 @@ contract TokenSale {
         doPurchase(msg.sender);
     }
 
-    function allocateTokenateTokens() onlyAfterBlock(endBlock) {
-        if (tokenateAllocated) throw;
-        allocate(tokenateMultisig, 100000);
-        tokenateAllocated = true;
-    }
+    // @todo if sale over
+    function allocate() {
+        if (allocated) throw;
 
-    function allocateDeveloperTokens() onlyAfterBlock(endBlock) {
-        if (devAllocated) throw;
-
-        uint tokensPerDev = 25000;
-        uint tokensPerWallet = tokensPerDev / 2;
-
-        for (uint i = 0; i < developers.length; i++) {
-            allocate(devMultisig, tokensPerWallet);
-            allocate(developers[i], tokensPerWallet);
+        for (uint i = 0; i < allocations.length; i++) {
+            token.transfer(allocations[i].beneficiary, allocations[i].amount);
+            AllocatedFunds(allocations[i].name, allocations[i].beneficiary, allocations[i].amount);
         }
 
-        devAllocated = true;
+        allocated = true;
     }
 
-    function doPurchase(address _owner) onlyBeforeBlock(endBlock) onlyAfterBlock(startBlock) private {
+    function doPurchase(address _owner) private {
         if (collected + msg.value > hardCap) throw;
 
-        // @todo safe multiply
-        uint tokens = msg.value * price;
+        if (!softCapReached && collected < softCap && collected + msg.value >= softCap) {
+            softCapReached = true;
+            SoftCapReached(softCap);
+        }
+
+        uint amount = msg.value;
+        uint tokens = amount * price;
 
         // Ensure we are not surpassing the purchasing limit per address
-        if (tokens > purchaseLimit) throw;
-        if (token.balanceOf(_owner) + tokens > purchaseLimit) throw;
+        if (amount > purchaseLimit) throw;
+        if ((token.balanceOf(_owner) / price) + amount > purchaseLimit) throw;
 
         if (!beneficiary.send(msg.value)) throw;
 
         collected += msg.value;
 
-        allocate(_owner, tokens);
-        NewContribution(_owner, tokens, msg.value);
-    }
-
-    function allocate(address _to, uint _amount) private {
         token.transfer(_to, _amount);
+        NewContribution(_owner, tokens, msg.value);
     }
 }
