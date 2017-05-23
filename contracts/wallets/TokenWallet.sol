@@ -11,7 +11,23 @@ contract TokenWallet is ownable {
         return ERC20(_token).balanceOf(this);
     }
 
-    function transfer(address _token, address _to, uint _amount) onlyOwner return (bool) {
+    function withdraw(address _to, uint _amount) onlyOwner returns (bool) {
+        if (_amount < 0) {
+            return false;
+        }
+
+        if (!_to.send(_amount)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    function withdrawToken(address _token, address _to, uint _amount) onlyOwner returns (bool) {
+        if (_amount < 0) {
+            return false;
+        }
+
         return ERC20(_token).transfer(_to, _amount);
     }
 }
