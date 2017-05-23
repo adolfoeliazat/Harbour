@@ -23,7 +23,7 @@ contract Token is ownable {
         symbol = _symbol;
     }
 
-    function totalSupply() constant returns (uint totalSupply) {
+    function totalSupply() constant returns (uint) {
         return totalSupply;
     }
 
