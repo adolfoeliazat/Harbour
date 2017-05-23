@@ -1,7 +1,7 @@
 pragma solidity ^0.4.11;
 
 import "./Token.sol";
-import "./../ownership/Ownable.sol";
+import "../ownership/Ownable.sol";
 
 contract TokenSale is ownable {
 
