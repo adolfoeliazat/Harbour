@@ -27,7 +27,7 @@ contract Token is Ownable {
         return totalSupply;
     }
 
-    function transfer(address _to, uint _value) returns (bool success) {
+    function transfer(address _to, uint _value) returns (bool) {
         if (balances[msg.sender] < _value || _value <= 0) {
             return false;
         }
@@ -38,11 +38,11 @@ contract Token is Ownable {
         return true;
     }
 
-    function balanceOf(address _owner) constant returns (uint balance) {
+    function balanceOf(address _owner) constant returns (uint) {
         return balances[_owner];
     }
 
-    function transferFrom(address _from, address _to, uint _value) returns (bool success) {
+    function transferFrom(address _from, address _to, uint _value) returns (bool) {
         if (balances[_from] < _value || allowed[_from][msg.sender] < _value || _value <= 0) {
             return false;
         }
@@ -54,13 +54,13 @@ contract Token is Ownable {
         return true;
     }
 
-    function approve(address _spender, uint _value) returns (bool success) {
+    function approve(address _spender, uint _value) returns (bool) {
         allowed[msg.sender][_spender] = _value;
         Approval(msg.sender, _spender, _value);
         return true;
     }
 
-    function allowance(address _owner, address _spender) constant returns (uint remaining) {
+    function allowance(address _owner, address _spender) constant returns (uint) {
         return allowed[_owner][_spender];
     }
 
