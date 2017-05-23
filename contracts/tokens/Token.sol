@@ -1,8 +1,9 @@
 pragma solidity ^0.4.11;
 
 import "../ownership/ownable.sol";
+import "./ERC20.sol";
 
-contract Token is ownable {
+contract Token is ERC20, ownable {
 
     string public name;
     string public symbol;
