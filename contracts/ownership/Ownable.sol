@@ -2,7 +2,7 @@ pragma solidity ^0.4.11;
 
 contract ownable {
 
-    address owner;
+    address public owner;
 
     modifier onlyOwner {
         if (owner != msg.sender) throw;
