@@ -94,7 +94,7 @@ contract TokenSale is ownable {
         for (uint i = 0; i < holders.length; i++) {
             address holder = holders[i];
             if (purchases[holder] == 0) continue;
-            if (!holder.send(purchases[holder])) throw;
+            if (!holder.send(purchases[holder])) continue;
             purchases[holder] = 0;
         }
     }

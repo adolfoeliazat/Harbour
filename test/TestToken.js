@@ -10,7 +10,6 @@ contract('Token', function (accounts) {
         });
     });
 
-
     it('should call balanceOf with the owner and return 650,000 FND', function () {
         return MyToken.deployed("The Fund", "FND", 650000).then(function (instance) {
             return instance.balanceOf.call(accounts[0]);
@@ -26,7 +25,6 @@ contract('Token', function (accounts) {
             assert.equal(value.valueOf(), 0, 'BalanceOf random address should be 0 FND');
         });
     });
-
 
     it('should call transfer from account[0] to accounts[1] with a value of 1 FND', function () {
         let token;
