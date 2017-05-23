@@ -6,7 +6,7 @@ contract('Token', function (accounts) {
         return MyToken.deployed("The Fund", "FND", 650000).then(function (instance) {
             return instance.totalSupply.call();
         }).then(function (value) {
-            assert.equal(value.valueOf(), 650000000000000000000000, 'it is should have returned 650,000');
+            assert.equal(value.valueOf(), 650000000000000000000000, 'totalSupply should be 650,000');
         });
     });
 
@@ -15,7 +15,7 @@ contract('Token', function (accounts) {
         return MyToken.deployed("The Fund", "FND", 650000).then(function (instance) {
             return instance.balanceOf.call(accounts[0]);
         }).then(function (value) {
-            assert.equal(value.valueOf(), 650000000000000000000000, 'it is should have returned 650,000');
+            assert.equal(value.valueOf(), 650000000000000000000000, 'BalanceOf owner should be 650,000');
         });
     });
 
@@ -23,20 +23,22 @@ contract('Token', function (accounts) {
         return MyToken.deployed("The Fund", "FND", 650000).then(function (instance) {
             return instance.balanceOf.call(accounts[1]);
         }).then(function (value) {
-            assert.equal(value.valueOf(), 0, 'it is should have returned 0');
+            assert.equal(value.valueOf(), 0, 'BalanceOf random address should be 0');
         });
     });
 
 
     it('should call transfer to accounts[1] with a value of 1', function () {
         let token;
+        let result;
         let balanceOfAccounts1;
         let balanceOfAccounts2;
 
         return MyToken.deployed("The Fund", "FND", 650000).then(function (instance) {
             token = instance;
-            return token.transfer(accounts[1], 1 * 10**18, {from: accounts[0]});
+            return token.transfer(accounts[1], 1, {from: accounts[0]});
         }).then(function (res) {
+            result = res;
             return token.balanceOf.call(accounts[0])
         }).then(function (balance) {
             balanceOfAccounts1 = balance.valueOf();
@@ -44,8 +46,9 @@ contract('Token', function (accounts) {
         }).then(function (balance) {
             balanceOfAccounts2 = balance.valueOf();
 
-            assert.equal(balanceOfAccounts1, 649999000000000000000000, 'it is should have returned 649,000');
-            assert.equal(balanceOfAccounts2, 1000000000000000000, 'it is should have returned 1');
+            assert.equal(result, true, 'transfer should have been successful');
+            assert.equal(balanceOfAccounts1, 649999000000000000000000, 'new balance of owner should be 649,000');
+            assert.equal(balanceOfAccounts2, 1000000000000000000, 'new balance of accounts[1] should be 1');
 
         });
 
