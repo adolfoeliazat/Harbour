@@ -1,6 +1,6 @@
 var Token = artifacts.require("./tokens/Token.sol");
 var TokenSale = artifacts.require("./tokens/TokenSale.sol");
-var Ownable = artifacts.require("./ownership/Ownable.sol");
+var Ownable = artifacts.require("./ownership/ownable.sol");
 
 
 module.exports = function (deployer) {

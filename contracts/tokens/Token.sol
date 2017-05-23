@@ -1,8 +1,8 @@
 pragma solidity ^0.4.11;
 
-import "../ownership/Ownable.sol";
+import "../ownership/ownable.sol";
 
-contract Token is Ownable {
+contract Token is ownable {
 
     string public name;
     string public symbol;
