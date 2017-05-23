@@ -1,6 +1,6 @@
 var Token = artifacts.require("./tokens/Token.sol");
 var TokenSale = artifacts.require("./tokens/TokenSale.sol");
-var Ownable = artifacts.require("./ownership/ownable.sol");
+var TokenWallet = artifacts.require("./wallets/TokenWallet.sol");
 
 
 module.exports = function (deployer) {
@@ -14,6 +14,8 @@ module.exports = function (deployer) {
   var _purchaseLimit = 5000;
 
   deployer.deploy(Token, _name, _symbol, _supply).then(function () {
-    deployer.deploy(TokenSale, _hardcap, _softcap, Token.address, _price, _purchaseLimit);
+    deployer.deploy(TokenWallet).then(function () {
+        deployer.deploy(TokenSale, _hardcap, _softcap, Token.address, _price, _purchaseLimit, TokenWallet.address);
+    });
   });
 };

@@ -5,7 +5,15 @@ import "../tokens/ERC20.sol";
 
 contract TokenWallet is ownable {
 
-    function () public payable {}
+    event Deposit(address indexed sender, uint value);
+
+    function () public payable {
+        if (msg.value < 0) {
+            return;
+        }
+
+        Deposit(msg.sender, msg.value);
+    }
 
     function balanceOf(address _token) constant returns (uint) {
         return ERC20(_token).balanceOf(this);

@@ -53,13 +53,15 @@ contract TokenSale is ownable {
         uint _price, 
         uint _purchaseLimit,
         uint _startTime,
-        uint _duration
+        uint _duration,
+        address _beneficiary
     ) {
         hardCap = _hardCap * 1 ether;
         softCap = _softCap * 1 ether;
         price = _price;
         purchaseLimit = _purchaseLimit * 1 ether;
         token = Token(_token);
+        beneficiary = _beneficiary;
 
         startTime = _startTime;
         endTime = _startTime + _duration * 1 hours;
