@@ -42,7 +42,7 @@ contract TokenSale is ownable {
     }
 
     modifier onlyBefore(uint time) {
-        if (now < time) throw;
+        if (now > time) throw;
         _;
     }
 
@@ -92,7 +92,7 @@ contract TokenSale is ownable {
         }
 
         for (uint i = 0; i < holders.length; i++) {
-            holder = holders[i];
+            address holder = holders[i];
             holder.send(purchases[holder]);
             purchases[holder] = 0;
         }
@@ -114,7 +114,7 @@ contract TokenSale is ownable {
 
         if (purchases[_owner] + msg.value > purchaseLimit) throw;
         if (purchases[_owner] == 0) {
-            holders[holders.length] = _owner
+            holders[holders.length] = _owner;
         }
 
         collected += msg.value;

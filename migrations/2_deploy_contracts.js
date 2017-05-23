@@ -14,8 +14,7 @@ module.exports = function(deployer) {
   var _purchaseLimit = 5000;
 
   deployer.deploy(Token, _name, _symbol, _supply).then(function(){
-    deployer.autolink();
-    // deployer.link(TokenSale, Ownable);
+    deployer.link(TokenSale, Ownable);
     deployer.deploy(TokenSale, _hardcap, _softcap, Token.address, _price, _purchaseLimit );
   });
 };
