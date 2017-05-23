@@ -30,15 +30,13 @@ contract('Token', function (accounts) {
 
     it('should call transfer to accounts[1] with a value of 1', function () {
         let token;
-        let result;
         let balanceOfAccounts1;
         let balanceOfAccounts2;
 
         return MyToken.deployed("The Fund", "FND", 650000).then(function (instance) {
             token = instance;
-            return token.transfer.call(accounts[1], 1, {from: accounts[0]});
+            return token.transfer(accounts[1], 1 * 10**18, {from: accounts[0]});
         }).then(function (res) {
-            result = res;
             return token.balanceOf.call(accounts[0])
         }).then(function (balance) {
             balanceOfAccounts1 = balance.valueOf();
@@ -46,7 +44,6 @@ contract('Token', function (accounts) {
         }).then(function (balance) {
             balanceOfAccounts2 = balance.valueOf();
 
-            assert.equal(result, true, 'it is should have returned true');
             assert.equal(balanceOfAccounts1, 649999000000000000000000, 'it is should have returned 649,000');
             assert.equal(balanceOfAccounts2, 1000000000000000000, 'it is should have returned 1');
 
