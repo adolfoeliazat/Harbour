@@ -39,7 +39,6 @@ contract('Token', function (accounts) {
             return token.transfer.call(accounts[1], 1, {from: accounts[0]});
         }).then(function (res) {
             result = res;
-            console.log(result)
             return token.balanceOf.call(accounts[0])
         }).then(function (balance) {
             balanceOfAccounts1 = balance.valueOf();
