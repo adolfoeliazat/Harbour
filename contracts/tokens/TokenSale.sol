@@ -1,9 +1,9 @@
 pragma solidity ^0.4.11;
 
 import "./Token.sol";
-import "../ownership/ownable.sol";
+import "../ownership/Ownable.sol";
 
-contract TokenSale is ownable {
+contract TokenSale is Ownable {
 
     struct Allocation {
         string name;
