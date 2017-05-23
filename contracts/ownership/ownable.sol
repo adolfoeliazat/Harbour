@@ -9,7 +9,7 @@ contract ownable {
         _;
     }
 
-    function ownable() {
+    function Ownable() {
         owner = msg.sender;
     }
 
