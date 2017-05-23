@@ -36,9 +36,10 @@ contract('Token', function (accounts) {
 
         return MyToken.deployed("The Fund", "FND", 650000).then(function (instance) {
             token = instance;
-            return token.transfer(accounts[1], 1, {from: accounts[0]});
+            return token.transfer.call(accounts[1], 1, {from: accounts[0]});
         }).then(function (res) {
             result = res;
+            console.log(result)
             return token.balanceOf.call(accounts[0])
         }).then(function (balance) {
             balanceOfAccounts1 = balance.valueOf();
