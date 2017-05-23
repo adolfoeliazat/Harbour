@@ -10,6 +10,8 @@ contract TimeLockedWallet is ownable {
         lockedUntil = now + lockForDays * 1 days;
     }
 
+    function () public payable {}
+
     function withdraw() onlyOwner {
         if (now < lockedUntil) throw;
         if (!msg.sender.send(this.balance)) throw;
