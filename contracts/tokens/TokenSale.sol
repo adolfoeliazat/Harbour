@@ -82,7 +82,7 @@ contract TokenSale is ownable {
 
     function withdraw() onlyAfter(endTime) onlyOwner {
         if (softCapReached) {
-            beneficiary.send(collected);
+            if (!beneficiary.send(collected)) throw;
 
             if (collected < hardCap) {
                 token.burn(token.balanceOf(this));
@@ -93,7 +93,8 @@ contract TokenSale is ownable {
 
         for (uint i = 0; i < holders.length; i++) {
             address holder = holders[i];
-            holder.send(purchases[holder]);
+            if (purchases[holder] == 0) continue;
+            if (!holder.send(purchases[holder])) continue;
             purchases[holder] = 0;
         }
     }

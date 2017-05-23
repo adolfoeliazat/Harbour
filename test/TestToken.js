@@ -6,16 +6,15 @@ contract('Token', function (accounts) {
         return MyToken.deployed("The Fund", "FND", 650000).then(function (instance) {
             return instance.totalSupply.call();
         }).then(function (value) {
-            assert.equal(value.valueOf(), 650000000000000000000000, 'it is should have returned 650,000');
+            assert.equal(value.valueOf(), 650000000000000000000000, 'totalSupply should be 650,000 FND');
         });
     });
-
 
     it('should call balanceOf with the owner and return 650,000 FND', function () {
         return MyToken.deployed("The Fund", "FND", 650000).then(function (instance) {
             return instance.balanceOf.call(accounts[0]);
         }).then(function (value) {
-            assert.equal(value.valueOf(), 650000000000000000000000, 'it is should have returned 650,000');
+            assert.equal(value.valueOf(), 650000000000000000000000, 'BalanceOf owner should be 650,000 FND');
         });
     });
 
@@ -23,20 +22,19 @@ contract('Token', function (accounts) {
         return MyToken.deployed("The Fund", "FND", 650000).then(function (instance) {
             return instance.balanceOf.call(accounts[1]);
         }).then(function (value) {
-            assert.equal(value.valueOf(), 0, 'it is should have returned 0');
+            assert.equal(value.valueOf(), 0, 'BalanceOf random address should be 0 FND');
         });
     });
 
-
-    it('should call transfer to accounts[1] with a value of 1', function () {
+    it('should call transfer from account[0] to accounts[1] with a value of 1 FND', function () {
         let token;
         let balanceOfAccounts1;
         let balanceOfAccounts2;
 
         return MyToken.deployed("The Fund", "FND", 650000).then(function (instance) {
             token = instance;
-            return token.transfer(accounts[1], 1 * 10**18, {from: accounts[0]});
-        }).then(function (res) {
+            return token.transfer(accounts[1], 1000000000000000000, { from: accounts[0] });
+        }).then(function () {
             return token.balanceOf.call(accounts[0])
         }).then(function (balance) {
             balanceOfAccounts1 = balance.valueOf();
@@ -44,9 +42,118 @@ contract('Token', function (accounts) {
         }).then(function (balance) {
             balanceOfAccounts2 = balance.valueOf();
 
-            assert.equal(balanceOfAccounts1, 649999000000000000000000, 'it is should have returned 649,000');
-            assert.equal(balanceOfAccounts2, 1000000000000000000, 'it is should have returned 1');
+            assert.equal(balanceOfAccounts1, 649999000000000000000000, 'new balance of owner should be 649,000 FND');
+            assert.equal(balanceOfAccounts2, 1000000000000000000, 'new balance of accounts[1] should be 1 FND');
+        });
 
+    });
+
+    it('should call transfer from account[1] to accounts[0] with a value of 1 FND', function () {
+        let token;
+        let balanceOfAccounts1;
+        let balanceOfAccounts2;
+
+        return MyToken.deployed("The Fund", "FND", 650000).then(function (instance) {
+            token = instance;
+            return token.transfer(accounts[0], 1000000000000000000, { from: accounts[1] });
+        }).then(function () {
+            return token.balanceOf.call(accounts[0])
+        }).then(function (balance) {
+            balanceOfAccounts1 = balance.valueOf();
+            return token.balanceOf.call(accounts[1])
+        }).then(function (balance) {
+            balanceOfAccounts2 = balance.valueOf();
+
+            assert.equal(balanceOfAccounts1, 650000000000000000000000, 'new balance of owner should be 650,000 FND');
+            assert.equal(balanceOfAccounts2, 0, 'new balance of accounts[1] should be 0 FND');
+        });
+
+    });
+
+    it('should try to transfer from account[1] to accounts[0] with a value of 1 FND but fail', function () {
+        let token;
+        let balanceOfAccounts1;
+        let balanceOfAccounts2;
+
+        return MyToken.deployed("The Fund", "FND", 650000).then(function (instance) {
+            token = instance;
+            return token.transfer(accounts[0], 1000000000000000000, { from: accounts[1] });
+        }).then(function () {
+            return token.balanceOf.call(accounts[0])
+        }).then(function (balance) {
+            balanceOfAccounts1 = balance.valueOf();
+            return token.balanceOf.call(accounts[1])
+        }).then(function (balance) {
+            balanceOfAccounts2 = balance.valueOf();
+
+            assert.equal(balanceOfAccounts1, 650000000000000000000000, 'balance of owner should be 650,000 FND');
+            assert.equal(balanceOfAccounts2, 0, 'balance of accounts[1] should be 0 FND');
+        });
+
+    });
+
+    it('should try to transfer from account[0] to accounts[1] with a value of 651,000 FND but fail', function () {
+        let token;
+        let balanceOfAccounts1;
+        let balanceOfAccounts2;
+
+        return MyToken.deployed("The Fund", "FND", 650000).then(function (instance) {
+            token = instance;
+            return token.transfer(accounts[1], 651000000000000000000000, { from: accounts[0] });
+        }).then(function () {
+            return token.balanceOf.call(accounts[0])
+        }).then(function (balance) {
+            balanceOfAccounts1 = balance.valueOf();
+            return token.balanceOf.call(accounts[1])
+        }).then(function (balance) {
+            balanceOfAccounts2 = balance.valueOf();
+
+            assert.equal(balanceOfAccounts1, 650000000000000000000000, 'balance of owner should be 650,000 FND');
+            assert.equal(balanceOfAccounts2, 0, 'balance of accounts[1] should be 0 FND');
+        });
+
+    });
+
+    it('should try to transfer from account[0] to accounts[1] with a value of -1 FND but fail', function () {
+        let token;
+        let balanceOfAccounts1;
+        let balanceOfAccounts2;
+
+        return MyToken.deployed("The Fund", "FND", 650000).then(function (instance) {
+            token = instance;
+            return token.transfer(accounts[1], -1000000000000000000, { from: accounts[0] });
+        }).then(function () {
+            return token.balanceOf.call(accounts[0])
+        }).then(function (balance) {
+            balanceOfAccounts1 = balance.valueOf();
+            return token.balanceOf.call(accounts[1])
+        }).then(function (balance) {
+            balanceOfAccounts2 = balance.valueOf();
+
+            assert.equal(balanceOfAccounts1, 650000000000000000000000, 'balance of owner should be 650,000 FND');
+            assert.equal(balanceOfAccounts2, 0, 'balance of accounts[1] should be 0 FND');
+        });
+
+    });
+
+     it('should try to transfer from account[0] to accounts[1] with a value of 0 FND but fail', function () {
+        let token;
+        let balanceOfAccounts1;
+        let balanceOfAccounts2;
+
+        return MyToken.deployed("The Fund", "FND", 650000).then(function (instance) {
+            token = instance;
+            return token.transfer(accounts[1], 0, { from: accounts[0] });
+        }).then(function () {
+            return token.balanceOf.call(accounts[0])
+        }).then(function (balance) {
+            balanceOfAccounts1 = balance.valueOf();
+            return token.balanceOf.call(accounts[1])
+        }).then(function (balance) {
+            balanceOfAccounts2 = balance.valueOf();
+
+            assert.equal(balanceOfAccounts1, 650000000000000000000000, 'balance of owner should be 650,000 FND');
+            assert.equal(balanceOfAccounts2, 0, 'balance of accounts[1] should be 0 FND');
         });
 
     });
