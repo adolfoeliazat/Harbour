@@ -79,7 +79,7 @@ contract('Token', function (accounts) {
         }).then((result) => {
             for (var i = 0; i < result.logs.length; i++) {
                 var log = result.logs[i];
-                if (log.event === "Tradnsfer") {
+                if (log.event === "Transfer") {
                     assert(log.args.from, accounts[0], 'The event\'s from address should be equal to accounts[0]')
                     assert(log.args.to, accounts[1], 'The event\'s to address should be equal to accounts[1]')
                     assert(log.args.value.valueOf(), 1000000000000000000, 'The event\'s value should be equal to 1 ETH')
