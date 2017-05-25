@@ -19,6 +19,7 @@ contract TokenWallet is Wallet, ownable {
             return false;
         }
 
+        Withdraw(msg.sender, _amount, _to);
         return true;
     }
 
@@ -27,6 +28,7 @@ contract TokenWallet is Wallet, ownable {
             return false;
         }
 
+        Withdraw(msg.sender, _amount, _to);
         return ERC20(_token).transfer(_to, _amount);
     }
 }

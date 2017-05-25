@@ -13,6 +13,10 @@ contract TimeLockedWallet is Wallet, ownable {
 
     function withdraw() onlyOwner {
         if (now < lockedUntil) throw;
-        if (!msg.sender.send(this.balance)) throw;
+
+        uint _amount = this.balance;
+        if (!msg.sender.send(_amount)) throw;
+                
+        Withdraw(msg.sender, _amount, msg.sender);
     }
 }
