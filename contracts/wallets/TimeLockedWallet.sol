@@ -1,16 +1,15 @@
 pragma solidity ^0.4.11;
 
 import "../ownership/ownable.sol";
+import "./Wallet.sol";
 
-contract TimeLockedWallet is ownable {
+contract TimeLockedWallet is Wallet, ownable {
 
     uint public lockedUntil;
 
     function TimeLockedWallet(uint lockForDays) {
         lockedUntil = now + lockForDays * 1 days;
     }
-
-    function () public payable {}
 
     function withdraw() onlyOwner {
         if (now < lockedUntil) throw;

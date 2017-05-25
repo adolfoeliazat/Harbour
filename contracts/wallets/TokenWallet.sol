@@ -2,18 +2,9 @@ pragma solidity ^0.4.11;
 
 import "../ownership/ownable.sol";
 import "../tokens/ERC20.sol";
+import "./Wallet.sol";
 
-contract TokenWallet is ownable {
-
-    event Deposit(address indexed sender, uint value);
-
-    function () public payable {
-        if (msg.value < 0) {
-            return;
-        }
-
-        Deposit(msg.sender, msg.value);
-    }
+contract TokenWallet is Wallet, ownable {
 
     function balanceOf(address _token) constant returns (uint) {
         return ERC20(_token).balanceOf(this);
