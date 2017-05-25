@@ -70,6 +70,26 @@ contract('Token', function (accounts) {
 
     });
 
+    it('should call transfer and fire an event', function (done) {
+        let watcher;
+        let token;
+        MyToken.deployed("The Fund", "FND", 650000).then((instance) => {
+            token = instance
+            return token.transfer(accounts[1], 1000000000000000000, { from: accounts[0] })
+        }).then((result) => {
+            for (var i = 0; i < result.logs.length; i++) {
+                var log = result.logs[i];
+                if (log.event === "Transfer") {
+                    assert(log.args.from, accounts[0], 'The event\'s from address should be equal to accounts[0]')
+                    assert(log.args.to, accounts[1], 'The event\'s to address should be equal to accounts[1]')
+                    assert(log.args.value.valueOf(), 1000000000000000000, 'The event\'s value should be equal to 1 ETH')
+                    done();
+                    break;
+                }
+            }
+        });
+    });
+
     it('should try to transfer from account[1] to accounts[0] with a value of 1 FND but fail', function () {
         let token;
         let balanceOfAccounts1;
@@ -136,7 +156,7 @@ contract('Token', function (accounts) {
 
     });
 
-     it('should try to transfer from account[0] to accounts[1] with a value of 0 FND but fail', function () {
+    it('should try to transfer from account[0] to accounts[1] with a value of 0 FND but fail', function () {
         let token;
         let balanceOfAccounts1;
         let balanceOfAccounts2;
