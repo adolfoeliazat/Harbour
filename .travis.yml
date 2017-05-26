@@ -8,9 +8,7 @@ node_js:
   - "6"
 
 before_install:
-  - npm install -g solc
-  - npm install truffle@3.1.9 -g
-  - npm i -g ethereumjs-testrpc
+  - npm install -g ethereumjs-testrpc truffle
 
 script:
   - testrpc > /dev/null &
