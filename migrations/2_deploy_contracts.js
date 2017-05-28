@@ -5,8 +5,8 @@ var Ownable = artifacts.require("./ownership/ownable.sol");
 
 module.exports = function (deployer) {
 
-  var _name = "The Fund";
-  var _symbol = "FND";
+  var _name = "Harbour";
+  var _symbol = "HRB";
   var _supply = 650000;
   var _hardcap = 100000
   var _softcap = 5000;
