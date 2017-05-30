@@ -11,15 +11,22 @@ contract Token is ERC20, ownable {
     uint public decimals = 18;
     uint public totalSupply;
 
+    bool public mintFinished = false;
+
     mapping (address => mapping (address => uint)) allowed;
     mapping (address => uint) balances;
 
     event Transfer(address indexed from, address indexed to, uint value);
     event Approval(address indexed owner, address indexed spender, uint value);
+    event Mint(address indexed to, uint value);
+    event MintFinished();
 
-    function Token(string _name, string _symbol, uint _totalSupply) {
-        totalSupply = _totalSupply * 10**decimals;
-        balances[msg.sender] = totalSupply;
+    modifier canMint {
+        if (mintFinished) throw;
+        _;
+    }
+
+    function Token(string _name, string _symbol) {
         name = _name;
         symbol = _symbol;
     }
@@ -61,14 +68,22 @@ contract Token is ERC20, ownable {
         return true;
     }
 
-    function allowance(address _owner, address _spender) constant returns (uint) {
-        return allowed[_owner][_spender];
+    function mint(address _to, uint _amount) onlyOwner canMint returns (bool) {
+        totalSupply += _amount; // @todo safe math
+        balances[_to] += _amount;
+
+        Mint(_to, _amount);
+        return true;
     }
 
-    function burn(uint _amount) onlyOwner {
-        if (balances[msg.sender] < _amount) throw;
-        balances[msg.sender] -= _amount;
-        totalSupply -= _amount;
+    function finishMinting() onlyOwner returns (bool) {
+        mintFinished = true;
+        MintFinished();
+        return true;
+    }
+
+    function allowance(address _owner, address _spender) constant returns (uint) {
+        return allowed[_owner][_spender];
     }
 
     function isSafeToAdd(uint left, uint right) private returns (bool) {

@@ -47,10 +47,10 @@ contract TokenSale is ownable {
     }
 
     function TokenSale(
-        uint _hardCap, 
+        uint _hardCap,
         uint _softCap,
-        address _token, 
-        uint _price, 
+        address _token,
+        uint _price,
         uint _purchaseLimit,
         uint _startTime,
         uint _duration,
@@ -68,28 +68,15 @@ contract TokenSale is ownable {
     }
 
     function () payable {
-        doPurchase(msg.sender);
-    }
-
-    function allocate() onlyAfter(endTime) onlyOwner {
-        if (allocated) throw;
-
-        for (uint i = 0; i < allocations.length; i++) {
-            token.transfer(allocations[i].beneficiary, allocations[i].amount);
-            AllocatedFunds(allocations[i].name, allocations[i].beneficiary, allocations[i].amount);
-        }
-
-        allocated = true;
+        if (msg.value > 0)
+            doPurchase(msg.sender);
     }
 
     function withdraw() onlyAfter(endTime) onlyOwner {
         if (softCapReached) {
             if (!beneficiary.send(collected)) throw;
-
-            if (collected < hardCap) {
-                token.burn(token.balanceOf(this));
-            }
-
+            allocate();
+            token.finishMinting();
             return;
         }
 
@@ -123,7 +110,18 @@ contract TokenSale is ownable {
         collected += msg.value;
         purchases[_owner] += msg.value;
 
-        token.transfer(msg.sender, msg.value);
+        token.mint(msg.sender, tokens);
         NewContribution(_owner, tokens, msg.value);
+    }
+
+    function allocate() private onlyAfter(endTime) {
+        if (allocated) throw;
+
+        for (uint i = 0; i < allocations.length; i++) {
+            token.mint(allocations[i].beneficiary, allocations[i].amount);
+            AllocatedFunds(allocations[i].name, allocations[i].beneficiary, allocations[i].amount);
+        }
+
+        allocated = true;
     }
 }
