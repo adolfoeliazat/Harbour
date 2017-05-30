@@ -3,15 +3,20 @@ const MyToken = artifacts.require('./tokens/Token.sol');
 contract('Token', function (accounts) {
 
     it('should call totalSupply and return 650,000 HRB', function () {
-        return MyToken.deployed("Harbour", "HRB", 650000).then(function (instance) {
-            return instance.totalSupply.call();
+        let token;
+        return MyToken.deployed("Harbour", "HRB").then(function (instance) {
+            token = instance;
+            return token.mint(accounts[0],650000000000000000000000)
+        }).then(function(){
+             return token.totalSupply.call();
         }).then(function (value) {
+
             assert.equal(value.valueOf(), 650000000000000000000000, 'totalSupply should be 650,000 HRB');
         });
     });
 
     it('should call balanceOf with the owner and return 650,000 HRB', function () {
-        return MyToken.deployed("Harbour", "HRB", 650000).then(function (instance) {
+        return MyToken.deployed("Harbour", "HRB").then(function (instance) {
             return instance.balanceOf.call(accounts[0]);
         }).then(function (value) {
             assert.equal(value.valueOf(), 650000000000000000000000, 'BalanceOf owner should be 650,000 HRB');
@@ -19,7 +24,7 @@ contract('Token', function (accounts) {
     });
 
     it('should call balanceOf with a random address and return 0 HRB', function () {
-        return MyToken.deployed("Harbour", "HRB", 650000).then(function (instance) {
+        return MyToken.deployed("Harbour", "HRB").then(function (instance) {
             return instance.balanceOf.call(accounts[1]);
         }).then(function (value) {
             assert.equal(value.valueOf(), 0, 'BalanceOf random address should be 0 HRB');
@@ -31,7 +36,7 @@ contract('Token', function (accounts) {
         let balanceOfAccounts1;
         let balanceOfAccounts2;
 
-        return MyToken.deployed("Harbour", "HRB", 650000).then(function (instance) {
+        return MyToken.deployed("Harbour", "HRB").then(function (instance) {
             token = instance;
             return token.transfer(accounts[1], 1000000000000000000, { from: accounts[0] });
         }).then(function () {
@@ -53,7 +58,7 @@ contract('Token', function (accounts) {
         let balanceOfAccounts1;
         let balanceOfAccounts2;
 
-        return MyToken.deployed("Harbour", "HRB", 650000).then(function (instance) {
+        return MyToken.deployed("Harbour", "HRB").then(function (instance) {
             token = instance;
             return token.transfer(accounts[0], 1000000000000000000, { from: accounts[1] });
         }).then(function () {
@@ -73,7 +78,7 @@ contract('Token', function (accounts) {
     it('should call transfer and fire an event', function (done) {
         let watcher;
         let token;
-        MyToken.deployed("Harbour", "HRB", 650000).then((instance) => {
+        MyToken.deployed("Harbour", "HRB").then((instance) => {
             token = instance
             return token.transfer(accounts[1], 1000000000000000000, { from: accounts[0] })
         }).then((result) => {
@@ -95,7 +100,7 @@ contract('Token', function (accounts) {
         let balanceOfAccounts1;
         let balanceOfAccounts2;
 
-        return MyToken.deployed("Harbour", "HRB", 650000).then(function (instance) {
+        return MyToken.deployed("Harbour", "HRB").then(function (instance) {
             token = instance;
             return token.transfer(accounts[0], 1000000000000000000, { from: accounts[1] });
         }).then(function () {
@@ -117,7 +122,7 @@ contract('Token', function (accounts) {
         let balanceOfAccounts1;
         let balanceOfAccounts2;
 
-        return MyToken.deployed("Harbour", "HRB", 650000).then(function (instance) {
+        return MyToken.deployed("Harbour", "HRB").then(function (instance) {
             token = instance;
             return token.transfer(accounts[1], 651000000000000000000000, { from: accounts[0] });
         }).then(function () {
@@ -139,7 +144,7 @@ contract('Token', function (accounts) {
         let balanceOfAccounts1;
         let balanceOfAccounts2;
 
-        return MyToken.deployed("Harbour", "HRB", 650000).then(function (instance) {
+        return MyToken.deployed("Harbour", "HRB").then(function (instance) {
             token = instance;
             return token.transfer(accounts[1], -1000000000000000000, { from: accounts[0] });
         }).then(function () {
@@ -161,7 +166,7 @@ contract('Token', function (accounts) {
         let balanceOfAccounts1;
         let balanceOfAccounts2;
 
-        return MyToken.deployed("Harbour", "HRB", 650000).then(function (instance) {
+        return MyToken.deployed("Harbour", "HRB").then(function (instance) {
             token = instance;
             return token.transfer(accounts[1], 0, { from: accounts[0] });
         }).then(function () {

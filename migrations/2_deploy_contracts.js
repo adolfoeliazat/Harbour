@@ -7,13 +7,12 @@ module.exports = function (deployer) {
 
   var _name = "Harbour";
   var _symbol = "HRB";
-  var _supply = 650000;
-  var _hardcap = 100000
+  var _hardcap = 50000
   var _softcap = 5000;
-  var _price = 5;
+  var _price = 10;
   var _purchaseLimit = 5000;
 
-  deployer.deploy(Token, _name, _symbol, _supply).then(function () {
+  deployer.deploy(Token, _name, _symbol).then(function () {
     deployer.deploy(TokenSale, _hardcap, _softcap, Token.address, _price, _purchaseLimit);
   });
 };
