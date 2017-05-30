@@ -2,15 +2,24 @@ const MyToken = artifacts.require('./tokens/Token.sol');
 
 contract('Token', function (accounts) {
 
-    it('should call totalSupply and return 650,000 HRB', function () {
-        let token;
-        return MyToken.deployed("Harbour", "HRB").then(function (instance) {
-            token = instance;
-            return token.mint(accounts[0],650000000000000000000000)
-        }).then(function(){
-             return token.totalSupply.call();
-        }).then(function (value) {
+    it('should mint Harbour', function (done) {
+        MyToken.deployed("Harbour", "HRB").then(function (instance) {
+            return instance.mint(accounts[0], 650000000000000000000000)
+        }).then((result) => {
+            for (var i = 0; i < result.logs.length; i++) {
+                var log = result.logs[i];
+                if (log.event === "Mint") {
+                    done();
+                    break;
+                }
+            }
+        });
+    });
 
+    it('should call totalSupply and return 650,000 HRB', function () {
+        return MyToken.deployed("Harbour", "HRB").then(function (instance) {
+            return instance.totalSupply.call();
+        }).then(function (value) {
             assert.equal(value.valueOf(), 650000000000000000000000, 'totalSupply should be 650,000 HRB');
         });
     });
@@ -76,18 +85,12 @@ contract('Token', function (accounts) {
     });
 
     it('should call transfer and fire an event', function (done) {
-        let watcher;
-        let token;
         MyToken.deployed("Harbour", "HRB").then((instance) => {
-            token = instance
-            return token.transfer(accounts[1], 1000000000000000000, { from: accounts[0] })
+            return instance.transfer(accounts[1], 1000000000000000000, { from: accounts[0] })
         }).then((result) => {
             for (var i = 0; i < result.logs.length; i++) {
                 var log = result.logs[i];
                 if (log.event === "Transfer") {
-                    assert(log.args.from, accounts[0], 'The event\'s from address should be equal to accounts[0]')
-                    assert(log.args.to, accounts[1], 'The event\'s to address should be equal to accounts[1]')
-                    assert(log.args.value.valueOf(), 1000000000000000000, 'The event\'s value should be equal to 1 ETH')
                     done();
                     break;
                 }
