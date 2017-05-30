@@ -2,7 +2,7 @@ const MyToken = artifacts.require('./tokens/Token.sol');
 
 contract('Token', function (accounts) {
 
-    it('should mint Harbour', function (done) {
+    it('should mint Harbour and fire an event', function (done) {
         MyToken.deployed("Harbour", "HRB").then(function (instance) {
             return instance.mint(accounts[0], 650000000000000000000000)
         }).then((result) => {
