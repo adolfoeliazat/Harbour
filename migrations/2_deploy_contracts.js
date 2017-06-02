@@ -12,7 +12,7 @@ module.exports = function (deployer) {
   var _price = 10;
   var _purchaseLimit = 5000;
 
-  deployer.deploy(Token, _name, _symbol, _supply).then(function () {
+  deployer.deploy(Token, _name, _symbol).then(function () {
     deployer.deploy(TokenWallet).then(function () {
         deployer.deploy(TokenSale, _hardcap, _softcap, Token.address, _price, _purchaseLimit, TokenWallet.address);
     });

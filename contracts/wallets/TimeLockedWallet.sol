@@ -3,7 +3,7 @@ pragma solidity ^0.4.11;
 import "../ownership/ownable.sol";
 import "./Wallet.sol";
 
-contract TimeLockedWallet is Wallet, ownable {
+contract TimeLockedWallet is Wallet {
 
     uint public lockedUntil;
 
@@ -11,12 +11,9 @@ contract TimeLockedWallet is Wallet, ownable {
         lockedUntil = now + lockForDays * 1 days;
     }
 
-    function withdraw() onlyOwner {
+    function withdraw(address _to, uint _amount) onlyOwner returns (bool) {
         if (now < lockedUntil) throw;
 
-        uint _amount = this.balance;
-        if (!msg.sender.send(_amount)) throw;
-                
-        Withdraw(msg.sender, _amount, msg.sender);
+        return super.withdraw(_to, _amount);
     }
 }
