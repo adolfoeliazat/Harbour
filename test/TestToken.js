@@ -12,21 +12,21 @@ contract('Token', function (accounts) {
         token = await MyToken.new("Harbour", "HRB");
     });
 
-    it('token should mint', async () => { 
+    it('token mint should fire event', async () => { 
+        let toMint = 300;
+        let account = accounts[0];
+        let result = await token.mint(account, toMint);
+
+        assert.equal(result.logs[0].event, 'Mint', 'mint event not fired');
+    });
+
+    it('token mint should update totalSupply', async () => { 
         let toMint = 300;
         let account = accounts[0];
         token.mint(account, toMint);
 
-        assert.equal(await token.balanceOf.call(account), toMint, 'tokens not minted correctly');
+        assert.equal(await token.totalSupply.call(), toMint, 'totalSupply does not match expected value');
     });
-
-    // it('should call totalSupply and return 650,000 HRB', function () {
-    //     return MyToken.deployed("Harbour", "HRB").then(function (instance) {
-    //         return instance.totalSupply.call();
-    //     }).then(function (value) {
-    //         assert.equal(value.valueOf(), 650000000000000000000000, 'totalSupply should be 650,000 HRB');
-    //     });
-    // });
 
     // it('should call balanceOf with the owner and return 650,000 HRB', function () {
     //     return MyToken.deployed("Harbour", "HRB").then(function (instance) {
