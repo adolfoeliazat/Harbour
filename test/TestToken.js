@@ -40,15 +40,6 @@ contract('Token', function (accounts) {
         assert.equal(await token.balanceOf(accounts[0]), 0, 'balanceOf does not return expected value');
     });
 
-
-    // it('should call balanceOf with a random address and return 0 HRB', function () {
-    //     return MyToken.deployed("Harbour", "HRB").then(function (instance) {
-    //         return instance.balanceOf.call(accounts[1]);
-    //     }).then(function (value) {
-    //         assert.equal(value.valueOf(), 0, 'BalanceOf random address should be 0 HRB');
-    //     });
-    // });
-
     // it('should call transfer from account[0] to accounts[1] with a value of 1 HRB', function () {
     //     let token;
     //     let balanceOfAccounts1;
