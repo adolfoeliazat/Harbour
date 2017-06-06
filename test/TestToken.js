@@ -12,7 +12,7 @@ contract('Token', function (accounts) {
         token = await MyToken.new("Harbour", "HRB");
     });
 
-    it('token mint should fire event', async () => { 
+    it('verifies that token mint fires an event', async () => { 
         let toMint = 300;
         let account = accounts[0];
         let result = await token.mint(account, toMint);
@@ -20,7 +20,7 @@ contract('Token', function (accounts) {
         assert.equal(result.logs[0].event, 'Mint', 'mint event not fired');
     });
 
-    it('token mint should update totalSupply', async () => { 
+    it('verifies that token mint updates totalSupply', async () => { 
         let toMint = 300;
         let account = accounts[0];
         token.mint(account, toMint);
