@@ -2,6 +2,15 @@ const MyToken = artifacts.require('./tokens/Token.sol');
 
 let token;
 
+function isException(error) {
+    let strError = error.toString();
+    return strError.includes('invalid opcode') || strError.includes('invalid JUMP');
+}
+
+function ensureException(error) {
+    assert(isException(error), error.toString());
+}
+
 contract('Token', function (accounts) {
 
     let shouldntFail = function (err) {
@@ -58,92 +67,31 @@ contract('Token', function (accounts) {
         assert.equal(result.logs[0].event, 'Transfer', 'transfer event not fired');
     });
 
-    // it('should try to transfer from account[1] to accounts[0] with a value of 1 HRB but fail', function () {
-    //     let token;
-    //     let balanceOfAccounts1;
-    //     let balanceOfAccounts2;
+    it('should fail to transfer when account does not have enough tokens', async () => { 
+        let toMint = 300;
+        token.mint(accounts[0], toMint);
 
-    //     return MyToken.deployed("Harbour", "HRB").then(function (instance) {
-    //         token = instance;
-    //         return token.transfer(accounts[0], 1000000000000000000, { from: accounts[1] });
-    //     }).then(function () {
-    //         return token.balanceOf.call(accounts[0])
-    //     }).then(function (balance) {
-    //         balanceOfAccounts1 = balance.valueOf();
-    //         return token.balanceOf.call(accounts[1])
-    //     }).then(function (balance) {
-    //         balanceOfAccounts2 = balance.valueOf();
+        let result = await token.transfer(accounts[1], toMint + 1, { from: accounts[0] });
 
-    //         assert.equal(balanceOfAccounts1, 650000000000000000000000, 'balance of owner should be 650,000 HRB');
-    //         assert.equal(balanceOfAccounts2, 0, 'balance of accounts[1] should be 0 HRB');
-    //     });
+        assert(result, false, "transfer did not fail");
+    });
 
-    // });
+    it('should fail to transfer when using negative token value', async () => { 
+        let toMint = 300;
+        token.mint(accounts[0], toMint);
 
-    // it('should try to transfer from account[0] to accounts[1] with a value of 651,000 HRB but fail', function () {
-    //     let token;
-    //     let balanceOfAccounts1;
-    //     let balanceOfAccounts2;
+        let result = await token.transfer(accounts[1], -1, { from: accounts[0] });
 
-    //     return MyToken.deployed("Harbour", "HRB").then(function (instance) {
-    //         token = instance;
-    //         return token.transfer(accounts[1], 651000000000000000000000, { from: accounts[0] });
-    //     }).then(function () {
-    //         return token.balanceOf.call(accounts[0])
-    //     }).then(function (balance) {
-    //         balanceOfAccounts1 = balance.valueOf();
-    //         return token.balanceOf.call(accounts[1])
-    //     }).then(function (balance) {
-    //         balanceOfAccounts2 = balance.valueOf();
+        assert(result, false, "transfer did not fail");
+    });
 
-    //         assert.equal(balanceOfAccounts1, 650000000000000000000000, 'balance of owner should be 650,000 HRB');
-    //         assert.equal(balanceOfAccounts2, 0, 'balance of accounts[1] should be 0 HRB');
-    //     });
+    it('should fail to transfer when transfering 0 tokens', async () => { 
+        let toMint = 300;
+        token.mint(accounts[0], toMint);
 
-    // });
+        let result = await token.transfer(accounts[1], 0, { from: accounts[0] });
 
-    // it('should try to transfer from account[0] to accounts[1] with a value of -1 HRB but fail', function () {
-    //     let token;
-    //     let balanceOfAccounts1;
-    //     let balanceOfAccounts2;
-
-    //     return MyToken.deployed("Harbour", "HRB").then(function (instance) {
-    //         token = instance;
-    //         return token.transfer(accounts[1], -1000000000000000000, { from: accounts[0] });
-    //     }).then(function () {
-    //         return token.balanceOf.call(accounts[0])
-    //     }).then(function (balance) {
-    //         balanceOfAccounts1 = balance.valueOf();
-    //         return token.balanceOf.call(accounts[1])
-    //     }).then(function (balance) {
-    //         balanceOfAccounts2 = balance.valueOf();
-
-    //         assert.equal(balanceOfAccounts1, 650000000000000000000000, 'balance of owner should be 650,000 HRB');
-    //         assert.equal(balanceOfAccounts2, 0, 'balance of accounts[1] should be 0 HRB');
-    //     });
-
-    // });
-
-    // it('should try to transfer from account[0] to accounts[1] with a value of 0 HRB but fail', function () {
-    //     let token;
-    //     let balanceOfAccounts1;
-    //     let balanceOfAccounts2;
-
-    //     return MyToken.deployed("Harbour", "HRB").then(function (instance) {
-    //         token = instance;
-    //         return token.transfer(accounts[1], 0, { from: accounts[0] });
-    //     }).then(function () {
-    //         return token.balanceOf.call(accounts[0])
-    //     }).then(function (balance) {
-    //         balanceOfAccounts1 = balance.valueOf();
-    //         return token.balanceOf.call(accounts[1])
-    //     }).then(function (balance) {
-    //         balanceOfAccounts2 = balance.valueOf();
-
-    //         assert.equal(balanceOfAccounts1, 650000000000000000000000, 'balance of owner should be 650,000 HRB');
-    //         assert.equal(balanceOfAccounts2, 0, 'balance of accounts[1] should be 0 HRB');
-    //     });
-
-    // });
+        assert(result, false, "transfer did not fail");
+    });
 
 });
