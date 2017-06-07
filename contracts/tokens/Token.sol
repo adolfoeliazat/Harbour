@@ -1,8 +1,10 @@
 pragma solidity ^0.4.11;
 
 import "../ownership/ownable.sol";
+import "../SafeMath.sol";
 
 contract Token is ownable {
+    using SafeMath for uint;
 
     string public name;
     string public symbol;
@@ -35,13 +37,10 @@ contract Token is ownable {
     }
 
     function transfer(address _to, uint _value) returns (bool) {
-        if (balances[msg.sender] < _value || _value <= 0) {
-            return false;
-        }
-
-        transferFunds(msg.sender, _to, _value);
+        balances[msg.sender] = balances[msg.sender].sub(_value);
+        balances[_to] = balances[_to].add(_value);
+        
         Transfer(msg.sender, _to, _value);
-
         return true;
     }
 
@@ -50,14 +49,11 @@ contract Token is ownable {
     }
 
     function transferFrom(address _from, address _to, uint _value) returns (bool) {
-        if (balances[_from] < _value || allowed[_from][msg.sender] < _value || _value <= 0) {
-            return false;
-        }
+        balances[_from] = balances[_from].sub(_value);
+        balances[_to] = balances[_to].add(_value);
 
-        transferFunds(_from, _to, _value);
-        allowed[_from][msg.sender] -= _value;
+        allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
         Transfer(_from, _to, _value);
-
         return true;
     }
 
@@ -68,8 +64,8 @@ contract Token is ownable {
     }
 
     function mint(address _to, uint _amount) onlyOwner canMint returns (bool) {
-        totalSupply += _amount; // @todo safe math
-        balances[_to] += _amount;
+        totalSupply = totalSupply.add(_amount);
+        balances[_to] = balances[_to].add(_amount);
 
         Mint(_to, _amount);
         return true;
@@ -83,22 +79,5 @@ contract Token is ownable {
 
     function allowance(address _owner, address _spender) constant returns (uint) {
         return allowed[_owner][_spender];
-    }
-
-    function isSafeToAdd(uint left, uint right) private returns (bool) {
-        return (left + right >= left);
-    }
-
-    function isSafeToSubtract(uint left, uint right) private returns (bool) {
-        return (right <= left);
-    }
-
-    function transferFunds(address _from, address _to, uint _value) private {
-        if (!isSafeToAdd(balances[_to], _value) || !isSafeToSubtract(balances[_from], _value)) {
-            throw;
-        }
-
-        balances[_to] += _value;
-        balances[_from] -= _value;
     }
 }

@@ -1,9 +1,10 @@
+var SafeMath = artifacts.require('SafeMath.sol');
 var Token = artifacts.require("./tokens/Token.sol");
 var TokenSale = artifacts.require("./tokens/TokenSale.sol");
 var Ownable = artifacts.require("./ownership/ownable.sol");
 
 
-module.exports = function (deployer) {
+module.exports = async (deployer) => {
 
   var _name = "Harbour";
   var _symbol = "HRB";
@@ -12,7 +13,9 @@ module.exports = function (deployer) {
   var _price = 10;
   var _purchaseLimit = 5000;
 
-  deployer.deploy(Token, _name, _symbol).then(function () {
-    deployer.deploy(TokenSale, _hardcap, _softcap, Token.address, _price, _purchaseLimit);
-  });
+  deployer.deploy(SafeMath);
+  await deployer.deploy(Token, _name, _symbol);
+
+  deployer.link(SafeMath, Token);
+  deployer.deploy(TokenSale, _hardcap, _softcap, Token.address, _price, _purchaseLimit);  
 };
