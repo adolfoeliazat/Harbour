@@ -92,7 +92,7 @@ contract TokenSale is ownable {
         allocations[allocations.length] = Allocation(name, beneficiary, amount);
     }
 
-    function doPurchase(address _owner) onlyAfter(startTime) onlyBefore(endTime) private {
+    function doPurchase(address _owner) private onlyAfter(startTime) onlyBefore(endTime) {
         if (collected + msg.value > hardCap) throw;
 
         if (!softCapReached && collected < softCap && collected + msg.value >= softCap) {
