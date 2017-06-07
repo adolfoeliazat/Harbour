@@ -11,6 +11,10 @@ function ensureException(error) {
     assert(isException(error), error.toString());
 }
 
+function assertJump(error) {
+      assert.isAbove(error.message.search('invalid JUMP'), -1, 'Invalid JUMP error must be returned');
+}
+
 contract('Token', function (accounts) {
 
     let shouldntFail = function (err) {
@@ -71,27 +75,25 @@ contract('Token', function (accounts) {
         let toMint = 300;
         token.mint(accounts[0], toMint);
 
-        let result = await token.transfer(accounts[1], toMint + 1, { from: accounts[0] });
+        try {
+            let transfer = await token.transfer(accounts[1], toMint + 1, { from: accounts[0] });
+        } catch(error) {
+            return ensureException(error);
+        }
 
-        assert(result, false, "transfer did not fail");
+        assert.fail("transfer did not fail");
     });
 
     it('should fail to transfer when using negative token value', async () => { 
         let toMint = 300;
         token.mint(accounts[0], toMint);
 
-        let result = await token.transfer(accounts[1], -1, { from: accounts[0] });
+        try {
+            let transfer = await token.transfer(accounts[1], -1, { from: accounts[0] });
+        } catch(error) {
+            return ensureException(error);
+        }
 
-        assert(result, false, "transfer did not fail");
+        assert.fail("transfer did not fail");
     });
-
-    it('should fail to transfer when transfering 0 tokens', async () => { 
-        let toMint = 300;
-        token.mint(accounts[0], toMint);
-
-        let result = await token.transfer(accounts[1], 0, { from: accounts[0] });
-
-        assert(result, false, "transfer did not fail");
-    });
-
 });
