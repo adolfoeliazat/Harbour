@@ -1,8 +1,7 @@
 var SafeMath = artifacts.require('SafeMath.sol');
 var Token = artifacts.require("./tokens/Token.sol");
 var TokenSale = artifacts.require("./tokens/TokenSale.sol");
-var Ownable = artifacts.require("./ownership/ownable.sol");
-
+var Configuration = artifacts.require("Configuration.sol");
 
 module.exports = async (deployer) => {
 
@@ -17,5 +16,6 @@ module.exports = async (deployer) => {
   await deployer.deploy(Token, _name, _symbol);
 
   deployer.link(SafeMath, Token);
-  deployer.deploy(TokenSale, _hardcap, _softcap, Token.address, _price, _purchaseLimit);  
+  deployer.deploy(TokenSale, _hardcap, _softcap, Token.address, _price, _purchaseLimit);
+  deployer.deploy(Configuration);
 };

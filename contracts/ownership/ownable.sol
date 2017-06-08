@@ -5,7 +5,7 @@ contract ownable {
     address public owner;
 
     modifier onlyOwner {
-        if (owner != msg.sender) throw;
+        if (!isOwner(msg.sender)) throw;
         _;
     }
 
@@ -15,5 +15,9 @@ contract ownable {
 
     function transferOwnership(address _newOwner) onlyOwner {
         owner = _newOwner;
+    }
+
+    function isOwner(address _address) returns (bool) {
+        return owner == _address;
     }
 }
