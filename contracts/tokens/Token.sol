@@ -37,6 +37,10 @@ contract Token is ownable {
     }
 
     function transfer(address _to, uint _value) returns (bool) {
+        if (_value <= 0) {
+            return false;
+        }
+
         balances[msg.sender] = balances[msg.sender].sub(_value);
         balances[_to] = balances[_to].add(_value);
         
@@ -49,6 +53,10 @@ contract Token is ownable {
     }
 
     function transferFrom(address _from, address _to, uint _value) returns (bool) {
+        if (_value <= 0) {
+            return false;
+        }
+
         balances[_from] = balances[_from].sub(_value);
         balances[_to] = balances[_to].add(_value);
 
