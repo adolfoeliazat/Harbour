@@ -1,10 +1,18 @@
 pragma solidity ^0.4.11;
 
+<<<<<<< HEAD
 import "../ownership/ownable.sol";
 import "./ERC20.sol";
 import "../SafeMath.sol";
 
 contract Token is ERC20, ownable {
+=======
+import "./ERC20.sol";
+import "./Mintable.sol";
+import "../SafeMath.sol";
+
+contract Token is ERC20, Mintable {
+>>>>>>> development
     using SafeMath for uint;
 
     string public name;
@@ -13,20 +21,8 @@ contract Token is ERC20, ownable {
     uint public decimals = 18;
     uint public totalSupply;
 
-    bool public mintFinished = false;
-
     mapping (address => mapping (address => uint)) allowed;
     mapping (address => uint) balances;
-
-    event Transfer(address indexed from, address indexed to, uint value);
-    event Approval(address indexed owner, address indexed spender, uint value);
-    event Mint(address indexed to, uint value);
-    event MintFinished();
-
-    modifier canMint {
-        if (mintFinished) throw;
-        _;
-    }
 
     function Token(string _name, string _symbol) {
         name = _name;
@@ -37,7 +33,19 @@ contract Token is ERC20, ownable {
         return totalSupply;
     }
 
+    function balanceOf(address _owner) constant returns (uint) {
+        return balances[_owner];
+    }
+
+    function allowance(address _owner, address _spender) constant returns (uint) {
+        return allowed[_owner][_spender];
+    }
+
     function transfer(address _to, uint _value) returns (bool) {
+        if (_value <= 0) {
+            return false;
+        }
+
         balances[msg.sender] = balances[msg.sender].sub(_value);
         balances[_to] = balances[_to].add(_value);
         
@@ -45,11 +53,11 @@ contract Token is ERC20, ownable {
         return true;
     }
 
-    function balanceOf(address _owner) constant returns (uint) {
-        return balances[_owner];
-    }
-
     function transferFrom(address _from, address _to, uint _value) returns (bool) {
+        if (_value <= 0) {
+            return false;
+        }
+
         balances[_from] = balances[_from].sub(_value);
         balances[_to] = balances[_to].add(_value);
 
@@ -76,9 +84,5 @@ contract Token is ERC20, ownable {
         mintFinished = true;
         MintFinished();
         return true;
-    }
-
-    function allowance(address _owner, address _spender) constant returns (uint) {
-        return allowed[_owner][_spender];
     }
 }

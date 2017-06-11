@@ -5,7 +5,7 @@ dist: trusty
 language: node_js
 
 node_js:
-  - "6"
+  - "7"
 
 before_install:
   - npm install -g ethereumjs-testrpc truffle

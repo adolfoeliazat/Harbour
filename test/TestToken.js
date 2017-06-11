@@ -1,19 +1,7 @@
 const MyToken = artifacts.require('./tokens/Token.sol');
+const utils = require('./helpers/Utils');
 
 let token;
-
-function isException(error) {
-    let strError = error.toString();
-    return strError.includes('invalid opcode') || strError.includes('invalid JUMP');
-}
-
-function ensureException(error) {
-    assert(isException(error), error.toString());
-}
-
-function assertJump(error) {
-      assert.isAbove(error.message.search('invalid JUMP'), -1, 'Invalid JUMP error must be returned');
-}
 
 contract('Token', function (accounts) {
 
@@ -78,7 +66,7 @@ contract('Token', function (accounts) {
         try {
             let transfer = await token.transfer(accounts[1], toMint + 1, { from: accounts[0] });
         } catch(error) {
-            return ensureException(error);
+            return utils.ensureException(error);
         }
 
         assert.fail("transfer did not fail");
@@ -91,7 +79,7 @@ contract('Token', function (accounts) {
         try {
             let transfer = await token.transfer(accounts[1], -1, { from: accounts[0] });
         } catch(error) {
-            return ensureException(error);
+            return utils.ensureException(error);
         }
 
         assert.fail("transfer did not fail");

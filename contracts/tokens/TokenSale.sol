@@ -1,9 +1,11 @@
 pragma solidity ^0.4.11;
 
-import "./Token.sol";
+import "./Mintable.sol";
 import "../ownership/ownable.sol";
+import "../SafeMath.sol";
 
 contract TokenSale is ownable {
+    using SafeMath for uint;
 
     struct Allocation {
         string name;
@@ -11,7 +13,7 @@ contract TokenSale is ownable {
         uint amount;
     }
 
-    Token public token;
+    Mintable public token;
     Allocation[] public allocations;
 
     address public beneficiary;
@@ -60,8 +62,12 @@ contract TokenSale is ownable {
         softCap = _softCap * 1 ether;
         price = _price;
         purchaseLimit = _purchaseLimit * 1 ether;
+<<<<<<< HEAD
         token = Token(_token);
         beneficiary = _beneficiary;
+=======
+        token = Mintable(_token);
+>>>>>>> development
 
         startTime = _startTime;
         endTime = _startTime + _duration * 1 hours;
@@ -93,22 +99,22 @@ contract TokenSale is ownable {
     }
 
     function doPurchase(address _owner) private onlyAfter(startTime) onlyBefore(endTime) {
-        if (collected + msg.value > hardCap) throw;
+        if (collected.add(msg.value) > hardCap) throw;
 
-        if (!softCapReached && collected < softCap && collected + msg.value >= softCap) {
+        if (!softCapReached && collected < softCap && collected.add(msg.value) >= softCap) {
             softCapReached = true;
             SoftCapReached(softCap);
         }
 
         uint tokens = msg.value * price;
 
-        if (purchases[_owner] + msg.value > purchaseLimit) throw;
+        if (purchases[_owner].add(msg.value) > purchaseLimit) throw;
         if (purchases[_owner] == 0) {
             holders[holders.length] = _owner;
         }
 
-        collected += msg.value;
-        purchases[_owner] += msg.value;
+        collected = collected.add(msg.value);
+        purchases[_owner] = purchases[_owner].add(msg.value);
 
         token.mint(msg.sender, tokens);
         NewContribution(_owner, tokens, msg.value);
