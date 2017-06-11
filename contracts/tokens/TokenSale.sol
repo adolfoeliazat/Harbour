@@ -62,12 +62,9 @@ contract TokenSale is ownable {
         softCap = _softCap * 1 ether;
         price = _price;
         purchaseLimit = _purchaseLimit * 1 ether;
-<<<<<<< HEAD
-        token = Token(_token);
         beneficiary = _beneficiary;
-=======
+
         token = Mintable(_token);
->>>>>>> development
 
         startTime = _startTime;
         endTime = _startTime + _duration * 1 hours;

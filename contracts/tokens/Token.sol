@@ -1,18 +1,10 @@
 pragma solidity ^0.4.11;
 
-<<<<<<< HEAD
-import "../ownership/ownable.sol";
-import "./ERC20.sol";
-import "../SafeMath.sol";
-
-contract Token is ERC20, ownable {
-=======
 import "./ERC20.sol";
 import "./Mintable.sol";
 import "../SafeMath.sol";
 
 contract Token is ERC20, Mintable {
->>>>>>> development
     using SafeMath for uint;
 
     string public name;

@@ -1,11 +1,7 @@
 var SafeMath = artifacts.require('SafeMath.sol');
 var Token = artifacts.require("./tokens/Token.sol");
 var TokenSale = artifacts.require("./tokens/TokenSale.sol");
-<<<<<<< HEAD
-
-=======
 var Configuration = artifacts.require("Configuration.sol");
->>>>>>> development
 
 module.exports = async (deployer) => {
 
