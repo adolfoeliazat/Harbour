@@ -14,8 +14,8 @@ module.exports = async (deployer) => {
 
   deployer.deploy(SafeMath);
   await deployer.deploy(Token, _name, _symbol);
+  await deployer.deploy(TokenSale, _hardcap, _softcap, Token.address, _price, _purchaseLimit);
 
-  deployer.link(SafeMath, Token);
-  deployer.deploy(TokenSale, _hardcap, _softcap, Token.address, _price, _purchaseLimit);
+  deployer.link(SafeMath, [Token, TokenSale]);
   deployer.deploy(Configuration);
 };
