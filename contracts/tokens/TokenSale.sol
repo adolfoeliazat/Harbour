@@ -111,6 +111,11 @@ contract TokenSale is ownable {
         purchases[_owner] = purchases[_owner].add(msg.value);
 
         token.mint(msg.sender, tokens);
+
+        if (collected == hardCap) {
+            GoalReached(hardCap);
+        }
+
         NewContribution(_owner, tokens, msg.value);
     }
 
