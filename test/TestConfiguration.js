@@ -1,4 +1,4 @@
-const Configuration = artifacts.require('Configuration.sol');
+const Configuration = artifacts.require('dao/Configuration.sol');
 const utils = require('./helpers/Utils.js');
 
 let config;
@@ -65,7 +65,7 @@ contract('Configuration', function (accounts) {
         config.addAdmin(accounts[1]);
 
         await config.set(key, newValue, { from: accounts[1] });
-        
+
         assert.equal(await config.get.call(key), newValue, 'value was not set correctly');
      });
 
@@ -77,7 +77,7 @@ contract('Configuration', function (accounts) {
         await config.set(key, value);
         await config.protect(key);
         await config.set(key, newValue);
-        
+
         assert.equal(await config.get.call(key), newValue, 'value was not set correctly');
      });
 });

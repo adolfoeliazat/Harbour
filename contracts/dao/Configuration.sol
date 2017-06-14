@@ -1,6 +1,6 @@
 pragma solidity ^0.4.11;
 
-import "./ownership/administrable.sol";
+import "../ownership/administrable.sol";
 
 contract Configuration is administrable {
 
