@@ -16,8 +16,8 @@ contract TimeLockedWallet is TokenWallet {
         return super.withdraw(_to, _amount);
     }
 
-    function withdrawToken(address _token, uint _amount) onlyOwner returns (bool) {
+    function withdrawToken(address _token, address _to, uint _amount) onlyOwner returns (bool) {
         if (now < lockedUntil) throw;
-        return super.withdrawToken(_token, _amount);
+        return super.withdrawToken(_token, _to, _amount);
     }
 }
