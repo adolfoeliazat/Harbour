@@ -1,6 +1,6 @@
 pragma solidity ^0.4.11;
 
-import "./Mintable.sol";
+import "./Token.sol";
 import "../ownership/ownable.sol";
 import "../SafeMath.sol";
 
@@ -13,11 +13,10 @@ contract TokenSale is ownable {
         uint amount;
     }
 
-    Mintable public token;
+    Token public token;
     Allocation[] public allocations;
 
     address public beneficiary;
-    address[] public holders;
 
     uint public hardCap;
     uint public softCap;
@@ -31,12 +30,13 @@ contract TokenSale is ownable {
     bool public softCapReached = false;
     bool public allocated = false;
 
-    mapping (address => uint) purchases;
+    mapping (address => bool) refunded;
 
     event GoalReached(uint amountRaised);
     event SoftCapReached(uint softCap);
     event NewContribution(address indexed holder, uint256 tokenAmount, uint256 etherAmount);
     event AllocatedFunds(string name, address indexed holder, uint256 amount);
+    event Refunded(address indexed holder, uint256 amount);
 
     modifier onlyAfter(uint time) {
         if (now < time) throw;
@@ -60,8 +60,8 @@ contract TokenSale is ownable {
         hardCap = _hardCap * 1 ether;
         softCap = _softCap * 1 ether;
         price = _price;
-        purchaseLimit = _purchaseLimit * 1 ether;
-        token = Mintable(_token);
+        purchaseLimit = (_purchaseLimit * 1 ether) / price;
+        token = Token(_token);
 
         startTime = _startTime;
         endTime = _startTime + _duration * 1 hours;
@@ -72,20 +72,29 @@ contract TokenSale is ownable {
             doPurchase(msg.sender);
     }
 
-    function withdraw() onlyAfter(endTime) onlyOwner {
-        if (softCapReached) {
-            if (!beneficiary.send(collected)) throw;
-            allocate();
-            token.finishMinting();
-            return;
+    function refund() external onlyAfter(endTime) {
+        if (softCapReached) throw;
+        if (refunded[msg.sender]) throw;
+
+        uint balance = token.balanceOf(msg.sender);
+        if (balance == 0) throw;
+
+        uint refund = balance / price;
+        if (refund > this.balance) {
+            refund = this.balance;
         }
 
-        for (uint i = 0; i < holders.length; i++) {
-            address holder = holders[i];
-            if (purchases[holder] == 0) continue;
-            if (!holder.send(purchases[holder])) continue;
-            purchases[holder] = 0;
-        }
+        if (!msg.sender.send(refund)) throw;
+        refunded[msg.sender] = true;
+        Refunded(msg.sender, refund);
+    }
+
+    function withdraw() external onlyAfter(endTime) onlyOwner {
+        if (!softCapReached) throw;
+        if (!beneficiary.send(collected)) throw;
+    
+        allocate();
+        token.finishMinting();
     }
 
     function addAllocation(string name, address beneficiary, uint amount) onlyOwner onlyBefore(startTime) {
@@ -101,14 +110,9 @@ contract TokenSale is ownable {
         }
 
         uint tokens = msg.value * price;
-
-        if (purchases[_owner].add(msg.value) > purchaseLimit) throw;
-        if (purchases[_owner] == 0) {
-            holders[holders.length] = _owner;
-        }
-
+        if (token.balanceOf(msg.sender) + tokens > purchaseLimit) throw;
+        
         collected = collected.add(msg.value);
-        purchases[_owner] = purchases[_owner].add(msg.value);
 
         token.mint(msg.sender, tokens);
 
