@@ -114,7 +114,12 @@ contract TokenSale is ownable {
         purchases[_owner] = purchases[_owner].add(msg.value);
 
         token.mint(msg.sender, tokens);
+
         NewContribution(_owner, tokens, msg.value);
+
+        if (collected == hardCap) {
+            GoalReached(hardCap);
+        }
     }
 
     function allocate() private onlyAfter(endTime) {

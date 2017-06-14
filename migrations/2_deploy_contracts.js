@@ -7,7 +7,7 @@ module.exports = async (deployer) => {
 
   var _name = "Harbour";
   var _symbol = "HRB";
-  var _hardcap = 50000
+  var _hardcap = 50000;
   var _softcap = 5000;
   var _price = 10;
   var _purchaseLimit = 5000;
