@@ -13,6 +13,8 @@ contract TokenSale is ownable {
         uint amount;
     }
 
+    uint256 public constant MAX_GAS_PRICE = 50000000000 wei;
+
     Token public token;
     Allocation[] public allocations;
 
@@ -45,6 +47,11 @@ contract TokenSale is ownable {
 
     modifier onlyBefore(uint time) {
         if (now > time) throw;
+        _;
+    }
+
+    modifier validGasPrice(uint gas) {
+        assert(gas <= MAX_GAS_PRICE);
         _;
     }
 
@@ -92,7 +99,7 @@ contract TokenSale is ownable {
     function withdraw() external onlyAfter(endTime) onlyOwner {
         if (!softCapReached) throw;
         if (!beneficiary.send(collected)) throw;
-    
+
         allocate();
         token.finishMinting();
     }
@@ -101,7 +108,7 @@ contract TokenSale is ownable {
         allocations[allocations.length] = Allocation(name, beneficiary, amount);
     }
 
-    function doPurchase(address _owner) private onlyAfter(startTime) onlyBefore(endTime) {
+    function doPurchase(address _owner) private onlyAfter(startTime) onlyBefore(endTime) validGasPrice(tx.gasprice) {
         if (collected.add(msg.value) > hardCap) throw;
 
         if (!softCapReached && collected < softCap && collected.add(msg.value) >= softCap) {
@@ -111,7 +118,7 @@ contract TokenSale is ownable {
 
         uint tokens = msg.value * price;
         if (token.balanceOf(msg.sender) + tokens > purchaseLimit) throw;
-        
+
         collected = collected.add(msg.value);
 
         token.mint(msg.sender, tokens);
