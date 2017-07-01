@@ -19,7 +19,7 @@ contract DaoChangeExecutor is ownable {
     }
 
     function execute(Proposal _proposal) onlyOwner returns (bool) {
-        proposal = DaoChangeProposal(_proposal);
+        DaoChangeProposal proposal = DaoChangeProposal(_proposal);
         (name, value) = proposal.getChange();
         configuration.set(name, value);
     }
