@@ -4,7 +4,7 @@ import "../../tokens/ERC20.sol";
 
 contract Proposal {
 
-    enum ProposalType { DAO_CHANGE, BUY }
+    enum ProposalType { DAO_CHANGE, BUY, CONTRIBUTION }
     enum Choice { YES, NO }
 
     struct Vote {
