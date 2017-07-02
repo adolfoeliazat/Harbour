@@ -6,7 +6,7 @@ contract BuyProposal is ExchangeProposal {
 
     address public token;
 
-    uint[] public ranges = [5, 10, 15, 20];
+    uint[] public ranges = [2, 4, 6, 8, 10];
 
     function proposalType() returns (ProposalType) {
         return ProposalType.BUY;
